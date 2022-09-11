@@ -8,6 +8,8 @@ import {
   Typography,
   CardActions,
   Button,
+  Box,
+  LinearProgress,
 } from "@mui/material";
 import axios from "axios";
 
@@ -16,6 +18,7 @@ interface Project {
   title?: string;
   desc?: string;
   img?: string;
+  link?: string;
 }
 
 const AlbumGrid = () => {
@@ -51,7 +54,9 @@ const AlbumGrid = () => {
     <Container sx={{ py: 8 }} maxWidth="md">
       <Grid container spacing={4}>
         {isLoading ? (
-          <Typography>Loading..</Typography>
+          <Box sx={{ width: '100%' }}>
+            <LinearProgress />
+          </Box>
         ) : (
           projects.map((project) => (
             <Grid item key={project.id} xs={12} sm={6} md={4}>
@@ -85,8 +90,15 @@ const AlbumGrid = () => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small">View</Button>
-                  <Button size="small">Edit</Button>
+                  {project?.link && (
+                    <Button
+                      size="small"
+                      href={`${project.link}`}
+                      target="_blank"
+                    >
+                      View Project
+                    </Button>
+                  )}
                 </CardActions>
               </Card>
             </Grid>
