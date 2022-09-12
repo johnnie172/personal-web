@@ -14,7 +14,7 @@ projects = [
     },
     {
         "id": 2,
-        "img": "https://source.unsplash.com/random"
+        "img": "https://picsum.photos/200"
     },
     {
         "id": 3,
@@ -23,13 +23,28 @@ projects = [
     }
 ]
 
+users = {
+    1: {
+        "title": "title",
+        "desc": "this is desc"
+    },
+    2: {
+
+    }
+}
+
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/user', methods=['GET'])
 def get_user():
-    return jsonify({"name": "Assaf"}), 200
+    user_id = request.args.get('user_id')
+    user = users.get(int(user_id))
 
+    if user:
+        return jsonify(user), 200
+
+    return jsonify('user not found'), 400
 
 @app.route('/projects', methods=['GET'])
 def get_all_projects():

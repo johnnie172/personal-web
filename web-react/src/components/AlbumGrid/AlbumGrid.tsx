@@ -12,6 +12,7 @@ import {
   LinearProgress,
 } from "@mui/material";
 import axios from "axios";
+import { PROJECTS_API } from "../../consts";
 
 interface Project {
   id: number;
@@ -28,7 +29,7 @@ const AlbumGrid = () => {
   useEffect(() => {
     const source = axios.CancelToken.source();
     const fetchData = async () => {
-      await axios("http://127.0.0.1:5000/projects", {
+      await axios(PROJECTS_API, {
         cancelToken: source.token,
       })
         .then((res) => {
@@ -37,7 +38,7 @@ const AlbumGrid = () => {
         })
         .catch((err) => {
           if (axios.isCancel(err)) {
-            console.log("Axios request aborted.");
+            console.log("fetch request aborted.");
           } else {
             console.error(err);
           }
@@ -51,15 +52,15 @@ const AlbumGrid = () => {
   }, []);
 
   return (
-    <Container sx={{ py: 8 }} maxWidth="md">
+    <Container sx={{ py: 8 }} maxWidth="lg">
       <Grid container spacing={4}>
         {isLoading ? (
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
         ) : (
           projects.map((project) => (
-            <Grid item key={project.id} xs={12} sm={6} md={4}>
+            <Grid item key={project.id} xs={12} sm={6} md={6}>
               <Card
                 sx={{
                   height: "100%",
@@ -70,8 +71,7 @@ const AlbumGrid = () => {
                 <CardMedia
                   component="img"
                   sx={{
-                    // 16:9
-                    pt: "56.25%",
+                    pt: 3,
                   }}
                   image={project?.img}
                   alt="random"
