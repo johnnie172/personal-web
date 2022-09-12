@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { PROJECTS_API } from "../../consts";
+import useAxiosFetch from "../../hooks/useAxiosFetch";
 
 interface Project {
   id: number;
@@ -23,8 +24,10 @@ interface Project {
 }
 
 const AlbumGrid = () => {
+
+  const [loading, setLoading] = useState(true);
   const [projects, setProjects] = useState<Array<Project> | []>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -34,12 +37,16 @@ const AlbumGrid = () => {
       })
         .then((res) => {
           setProjects(res.data);
-          setIsLoading(false);
+          setLoading(false);
         })
         .catch((err) => {
+          setLoading(false);
           if (axios.isCancel(err)) {
             console.log("fetch request aborted.");
+          } else if (err?.response?.data) {
+            setError(err?.response?.data);
           } else {
+            setError("Error");
             console.error(err);
           }
         });
@@ -54,10 +61,16 @@ const AlbumGrid = () => {
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <Grid container spacing={4}>
-        {isLoading ? (
+        {loading ? (
           <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
+        ) : error ? (
+          <Typography
+            variant="h4"
+            align="center"
+            color="error"
+          >{`${error}`}</Typography>
         ) : (
           projects.map((project) => (
             <Grid item key={project.id} xs={12} sm={6} md={6}>

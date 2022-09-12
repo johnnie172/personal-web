@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   LinearProgress,
   Button,
@@ -7,50 +6,18 @@ import {
   Typography,
   Container,
 } from "@mui/material";
-import axios from "axios";
 import { USER_API } from "../../consts";
 import { AlbumGrid } from "../AlbumGrid";
-
+import useAxiosFetch from "../../hooks/useAxiosFetch"
 interface User {
   title?: string;
   desc?: string;
 }
 
 const MainPage = () => {
-  const [user, setUser] = useState<User>({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    const fetchData = async () => {
-      await axios(USER_API, {
-        cancelToken: source.token,
-        // TODO: get user id
-        params: { user_id: 1 },
-      })
-        .then((res) => {
-          setUser(res.data);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          if (axios.isCancel(err)) {
-            console.log("fetch request aborted.");
-            setIsLoading(false);
-          } else if (err?.response?.data) {
-            setError(err?.response?.data);
-          } else {
-            console.error(err);
-          }
-        });
-    };
-    fetchData();
-
-    return () => {
-      source.cancel();
-    };
-  }, []);
-
+  // TODO: get user id
+  const { data, loading, error } = useAxiosFetch(USER_API, {"user_id": "1"});
+  const user: User = data
   return (
     <main>
       <Box
@@ -60,7 +27,7 @@ const MainPage = () => {
           pb: 6,
         }}
       >
-        {isLoading ? (
+        {loading ? (
           <LinearProgress />
         ) : error ? (
           <Typography

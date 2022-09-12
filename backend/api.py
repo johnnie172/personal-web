@@ -25,7 +25,7 @@ projects = [
 
 users = {
     1: {
-        "title": "title",
+        "title": "Johnathan Maytliss - Software Engineer",
         "desc": "this is desc"
     },
     2: {
@@ -39,12 +39,13 @@ CORS(app)
 @app.route('/user', methods=['GET'])
 def get_user():
     user_id = request.args.get('user_id')
-    user = users.get(int(user_id))
-
-    if user:
-        return jsonify(user), 200
-
-    return jsonify('user not found'), 400
+    if user_id:
+        user = users.get(int(user_id))
+        if user:
+            return jsonify(user), 200
+        else:
+            return 'user not found', 400
+    return 'bad request', 400
 
 @app.route('/projects', methods=['GET'])
 def get_all_projects():

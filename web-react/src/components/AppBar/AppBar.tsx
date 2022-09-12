@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 
 const AppBar = () => {
   return (
-    <MuiAppBar position="relative">
+    <MuiAppBar position="sticky">
       <Toolbar>
         <CameraIcon sx={{ mr: 2 }} />
         <Typography variant="h6" color="inherit" noWrap>
