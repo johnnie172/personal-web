@@ -10,6 +10,7 @@ import {
   Box,
   LinearProgress,
 } from "@mui/material";
+import { ProjectPage } from "../ProjectPage";
 import { PROJECTS_API } from "../../consts";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 
@@ -19,10 +20,11 @@ interface IProject {
   desc?: string;
   img?: string;
   link?: string;
+  git?: string;
 }
 
 const AlbumGrid = () => {
-  const { data, loading, error } = useAxiosFetch(PROJECTS_API, null);
+  const { data, loading, error } = useAxiosFetch(PROJECTS_API, null, true);
   const projects: Array<IProject> =
     Object.keys(data).length !== 0 ? data : [{ id: -1 }];
 
@@ -71,13 +73,16 @@ const AlbumGrid = () => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  {project?.link && (
+                  <ProjectPage
+                    api={`${PROJECTS_API}/${project.id}`}
+                  ></ProjectPage>
+                  {project?.git && (
                     <Button
-                      size="small"
-                      href={`${project.link}`}
+                      href={`${project.git}`}
                       target="_blank"
+                      variant="outlined"
                     >
-                      View Project
+                      View Git
                     </Button>
                   )}
                 </CardActions>

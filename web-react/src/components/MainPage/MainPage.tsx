@@ -16,7 +16,7 @@ interface IUser {
 
 const MainPage = () => {
   // TODO: get user id
-  const { data, loading, error } = useAxiosFetch(USER_API, { user_id: "1" });
+  const { data, loading, error } = useAxiosFetch(USER_API, { user_id: "1" }, true);
   const user: IUser = data;
 
   return (

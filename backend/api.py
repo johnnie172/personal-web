@@ -10,7 +10,7 @@ projects = [
         "title": "title",
         "desc": "example for desc",
         "img": "https://source.unsplash.com/random",
-        "link": "https://www.github.com"
+        "git": "https://www.github.com"
     },
     {
         "id": 2,
@@ -51,3 +51,9 @@ def get_user():
 def get_all_projects():
     sleep(0.5)
     return jsonify(projects), 200
+
+@app.route('/projects/<int:project_id>')
+def get_project(project_id):
+    sleep(1)
+    return jsonify({"id": project_id}), 200
+
