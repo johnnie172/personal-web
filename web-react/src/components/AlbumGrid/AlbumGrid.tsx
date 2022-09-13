@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Container,
   Grid,
@@ -11,11 +10,10 @@ import {
   Box,
   LinearProgress,
 } from "@mui/material";
-import axios from "axios";
 import { PROJECTS_API } from "../../consts";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 
-interface Project {
+interface IProject {
   id: number;
   title?: string;
   desc?: string;
@@ -24,39 +22,9 @@ interface Project {
 }
 
 const AlbumGrid = () => {
-
-  const [loading, setLoading] = useState(true);
-  const [projects, setProjects] = useState<Array<Project> | []>([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    const fetchData = async () => {
-      await axios(PROJECTS_API, {
-        cancelToken: source.token,
-      })
-        .then((res) => {
-          setProjects(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setLoading(false);
-          if (axios.isCancel(err)) {
-            console.log("fetch request aborted.");
-          } else if (err?.response?.data) {
-            setError(err?.response?.data);
-          } else {
-            setError("Error");
-            console.error(err);
-          }
-        });
-    };
-    fetchData();
-
-    return () => {
-      source.cancel();
-    };
-  }, []);
+  const { data, loading, error } = useAxiosFetch(PROJECTS_API, null);
+  const projects: Array<IProject> =
+    Object.keys(data).length !== 0 ? data : [{ id: -1 }];
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">

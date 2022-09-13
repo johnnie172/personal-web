@@ -8,16 +8,17 @@ import {
 } from "@mui/material";
 import { USER_API } from "../../consts";
 import { AlbumGrid } from "../AlbumGrid";
-import useAxiosFetch from "../../hooks/useAxiosFetch"
-interface User {
+import useAxiosFetch from "../../hooks/useAxiosFetch";
+interface IUser {
   title?: string;
   desc?: string;
 }
 
 const MainPage = () => {
   // TODO: get user id
-  const { data, loading, error } = useAxiosFetch(USER_API, {"user_id": "1"});
-  const user: User = data
+  const { data, loading, error } = useAxiosFetch(USER_API, { user_id: "1" });
+  const user: IUser = data;
+
   return (
     <main>
       <Box
