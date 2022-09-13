@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
-from flask_cors import CORS
-
+from flask_cors import CORS     
 
 app = Flask(__name__)
 CORS(app)

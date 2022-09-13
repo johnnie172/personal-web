@@ -1,4 +1,4 @@
-import React from "react";
+import React from "React";
 import "./App.css";
 import { MainPage } from "./components/MainPage";
 import { AppBar } from "./components/AppBar";
