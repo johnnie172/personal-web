@@ -10,6 +10,7 @@ import {
   Box,
   LinearProgress,
 } from "@mui/material";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import { ProjectPage } from "../ProjectPage";
 import { PROJECTS_API } from "../../consts";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
@@ -78,9 +79,10 @@ const AlbumGrid = () => {
                   ></ProjectPage>
                   {project?.git && (
                     <Button
+                      variant="outlined"
                       href={`${project.git}`}
                       target="_blank"
-                      variant="outlined"
+                      startIcon={<GitHubIcon />}
                     >
                       View Git
                     </Button>
