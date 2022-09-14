@@ -80,6 +80,7 @@ const AlbumGrid = () => {
                   {project?.git && (
                     <Button
                       variant="outlined"
+                      sx={{ ml: 1 }}
                       href={`${project.git}`}
                       target="_blank"
                       startIcon={<GitHubIcon />}

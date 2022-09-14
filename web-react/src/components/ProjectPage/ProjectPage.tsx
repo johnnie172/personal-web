@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
@@ -26,7 +26,7 @@ const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
   minHeight: theme.spacing(10),
 }));
 
-export interface DialogTitleProps {
+interface DialogTitleProps {
   id: string;
   children?: React.ReactNode;
   onClose: () => void;
@@ -72,48 +72,46 @@ const ProjectPage: React.FC<Props> = ({ api }) => {
 
   return (
     <>
-      <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Open Project
-        </Button>
-        <BootstrapDialog
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Open Project
+      </Button>
+      <StyledDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+        fullWidth
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
           onClose={handleClose}
-          aria-labelledby="customized-dialog-title"
-          open={open}
-          fullWidth
         >
-          <BootstrapDialogTitle
-            id="customized-dialog-title"
-            onClose={handleClose}
-          >
-            {loading ? "Loading" : `Project ${data?.id}`}
-          </BootstrapDialogTitle>
-          {loading ? (
+          {loading ? "Loading" : `Project ${data?.id}`}
+        </BootstrapDialogTitle>
+        {loading ? (
+          <StyledDialogContent dividers>
+            <CircularProgress />
+          </StyledDialogContent>
+        ) : error ? (
+          <StyledDialogContent dividers>
+            <Typography gutterBottom color="error">
+              {error}
+            </Typography>
+          </StyledDialogContent>
+        ) : (
+          <>
             <StyledDialogContent dividers>
-              <CircularProgress />
+              <Typography gutterBottom></Typography>
+              <Typography gutterBottom></Typography>
+              <Typography gutterBottom></Typography>
             </StyledDialogContent>
-          ) : error ? (
-            <StyledDialogContent dividers>
-              <Typography gutterBottom color="error">
-                {error}
-              </Typography>
-            </StyledDialogContent>
-          ) : (
-            <>
-              <StyledDialogContent dividers>
-                <Typography gutterBottom></Typography>
-                <Typography gutterBottom></Typography>
-                <Typography gutterBottom></Typography>
-              </StyledDialogContent>
-            </>
-          )}
-          <DialogActions>
-            <Button autoFocus onClick={handleClose}>
-              back
-            </Button>
-          </DialogActions>
-        </BootstrapDialog>
-      </div>
+          </>
+        )}
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            back
+          </Button>
+        </DialogActions>
+      </StyledDialog>
     </>
   );
 };
