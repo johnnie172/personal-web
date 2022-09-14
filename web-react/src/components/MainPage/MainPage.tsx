@@ -10,13 +10,20 @@ import { USER_API } from "../../consts";
 import { AlbumGrid } from "../AlbumGrid";
 import useAxiosFetch from "../../hooks/useAxiosFetch";
 interface IUser {
+  email: string;
+  name?: string;
+  last_name?: string;
   title?: string;
   desc?: string;
 }
 
 const MainPage = () => {
-  // TODO: get user id
-  const { data, loading, error } = useAxiosFetch(USER_API, { user_id: "1" }, true);
+  // TODO: get user email
+  const { data, loading, error } = useAxiosFetch(
+    USER_API,
+    { user_email: "johnathan.maytliss@gmail.com" },
+    true
+  );
   const user: IUser = data;
 
   return (
@@ -45,7 +52,7 @@ const MainPage = () => {
               color="text.primary"
               gutterBottom
             >
-              {user?.title}
+              {`${user?.name} ${user?.last_name} - ${user?.title}`}
             </Typography>
             <Typography
               variant="h5"
