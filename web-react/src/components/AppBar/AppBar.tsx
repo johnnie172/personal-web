@@ -1,16 +1,19 @@
-import Toolbar from "@mui/material/Toolbar";
 import CameraIcon from "@mui/icons-material/PhotoCamera";
-import { AppBar as MuiAppBar } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Typography, Toolbar, AppBar as MuiAppBar } from "@mui/material";
 
-const AppBar = () => {
+interface Props {
+  children?: React.ReactNode;
+}
+
+const AppBar: React.FC<Props> = ({ children }) => {
   return (
-    <MuiAppBar position="relative">
+    <MuiAppBar position="sticky">
       <Toolbar>
         <CameraIcon sx={{ mr: 2 }} />
-        <Typography variant="h6" color="inherit" noWrap>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           My Web
         </Typography>
+        {children}
       </Toolbar>
     </MuiAppBar>
   );
