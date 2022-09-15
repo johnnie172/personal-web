@@ -8,6 +8,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Button } from "@mui/material";
 import { Brightness3, Brightness7 } from "@mui/icons-material";
+import { Route, Routes } from "react-router-dom";
+
+const home_paths = ["home", "/"];
 
 const App = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -44,7 +47,12 @@ const App = () => {
         <AppBar>
           <NavButton />
         </AppBar>
-        <MainPage />
+        <Routes>
+          {home_paths.map((path) => (
+            <Route key={path} path={path} element={<MainPage />} />
+          ))}
+          <Route path="/Contact" element={<>Unavailable</>}></Route>
+        </Routes>
         <AppFooter />
       </div>
     </ThemeProvider>
