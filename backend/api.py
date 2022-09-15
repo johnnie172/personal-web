@@ -2,7 +2,7 @@ from time import sleep
 from flask import Flask
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
 from flask_cors import CORS
-
+from db import MongoDB
 
 projects = [
     {
@@ -25,6 +25,7 @@ projects = [
 
 users = {
     1: {
+        "email": "johnathan.maytliss@gmail.com",
         "title": "Johnathan Maytliss - Software Engineer",
         "desc": "this is desc"
     },
@@ -35,13 +36,16 @@ users = {
 
 app = Flask(__name__)
 CORS(app)
+mongo = MongoDB("personal-web")
+mongo.connect()
 
 @app.route('/user', methods=['GET'])
 def get_user():
-    user_id = request.args.get('user_id')
-    if user_id:
-        user = users.get(int(user_id))
+    user_email = request.args.get('user_email')
+    if user_email:
+        user = mongo.get_one("user", {"email": user_email})
         if user:
+            user.pop("_id")
             return jsonify(user), 200
         else:
             return 'user not found', 400

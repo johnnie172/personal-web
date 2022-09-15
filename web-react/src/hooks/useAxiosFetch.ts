@@ -1,4 +1,3 @@
-// use-fetch-data.js
 import { useEffect, useState } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 
@@ -20,7 +19,7 @@ const useAxiosFetch = (
     if (axiosParams !== null) config["params"] = axiosParams;
 
     const fetchData = async () => {
-        if (!reRender) return
+      if (!reRender) return;
       await axios(api, config)
         .then((res) => {
           setData(res.data);
@@ -30,10 +29,8 @@ const useAxiosFetch = (
           setLoading(false);
           if (axios.isCancel(err)) {
             console.log("fetch request aborted.");
-          } else if (err?.response?.data) {
-            setError(err?.response?.data);
           } else {
-            setError("Error");
+            setError(err?.response?.data ?? "Error");
             console.error(err);
           }
         });
@@ -42,12 +39,11 @@ const useAxiosFetch = (
     return () => source.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reRender]);
-
   return {
     data,
     loading,
     error,
-    setRerender
+    setRerender,
   };
 };
 
