@@ -18,7 +18,7 @@ import useAxiosFetch from "../../hooks/useAxiosFetch";
 interface IProject {
   id: number;
   title?: string;
-  desc?: string;
+  description?: string;
   img?: string;
   link?: string;
   git?: string;
@@ -70,7 +70,7 @@ const AlbumGrid = () => {
                     {project.title || "No title"}
                   </Typography>
                   <Typography textAlign={"center"}>
-                    {project.desc || "No description"}
+                    {project.description || "No description"}
                   </Typography>
                 </CardContent>
                 <CardActions>

@@ -8,7 +8,7 @@ projects = [
     {
         "id": 1,
         "title": "title",
-        "desc": "example for desc",
+        "description": "example for desc",
         "img": "https://source.unsplash.com/random",
         "git": "https://www.github.com"
     },
@@ -27,7 +27,7 @@ users = {
     1: {
         "email": "johnathan.maytliss@gmail.com",
         "title": "Johnathan Maytliss - Software Engineer",
-        "desc": "this is desc"
+        "description": "this is desc"
     },
     2: {
 
@@ -60,4 +60,3 @@ def get_all_projects():
 def get_project(project_id):
     sleep(1)
     return jsonify({"id": project_id}), 200
-

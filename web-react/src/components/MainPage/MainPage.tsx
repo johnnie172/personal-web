@@ -14,7 +14,7 @@ interface IUser {
   name?: string;
   last_name?: string;
   title?: string;
-  desc?: string;
+  description?: string;
 }
 
 const MainPage = () => {
@@ -52,7 +52,9 @@ const MainPage = () => {
               color="text.primary"
               gutterBottom
             >
-              {`${user?.name} ${user?.last_name} - ${user?.title}`}
+              {`${user?.name || ""} ${user?.last_name || ""} ${
+                user?.title || ""
+              }`}
             </Typography>
             <Typography
               variant="h5"
@@ -60,7 +62,7 @@ const MainPage = () => {
               color="text.secondary"
               paragraph
             >
-              {user?.desc}
+              {user?.description || ""}
             </Typography>
             <Stack
               sx={{ pt: 4 }}
