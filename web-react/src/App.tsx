@@ -10,6 +10,7 @@ import { useLocalStorage } from "./hooks";
 import { MainPage } from "./components/MainPage";
 import { AppBar } from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
+import { Map } from "./components/Map"
 
 const home_paths = ["home", "/"];
 const App = () => {
@@ -53,6 +54,7 @@ const App = () => {
             <Route key={path} path={path} element={<MainPage />} />
           ))}
           <Route path="/Contact" element={<>Unavailable</>}></Route>
+          <Route path="/Locations" element={<Map />}></Route>
         </Routes>
         <AppFooter />
       </div>

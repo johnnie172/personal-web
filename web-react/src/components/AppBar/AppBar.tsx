@@ -13,7 +13,7 @@ interface Props {
 }
 
 const AppBar: React.FC<Props> = ({ children }) => {
-  const pages = ["Home", "Contact"];
+  const pages = ["Home", "Contact", "Locations"];
 
   return (
     <MuiAppBar position="sticky">

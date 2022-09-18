@@ -18,10 +18,9 @@ interface IUser {
 }
 
 const MainPage = () => {
-  // TODO: get user email
   const { data, loading, error } = useAxiosFetch(
     USER_API,
-    { user_email: "johnathan.maytliss@gmail.com" },
+    null,
     true
   );
   const user: IUser = data;
