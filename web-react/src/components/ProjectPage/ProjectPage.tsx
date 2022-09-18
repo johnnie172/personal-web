@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAxiosFetch from "../../hooks/useAxiosFetch";
+import { useAxiosFetch } from "../../hooks";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -61,12 +61,12 @@ interface Props {
 }
 
 const ProjectPage: React.FC<Props> = ({ api }) => {
-  const { data, loading, error, setRerender } = useAxiosFetch(api, null, false);
+  const { data, loading, error, setFetch } = useAxiosFetch(api, null, false);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
-    setRerender(true);
+    setFetch(true);
   };
   const handleClose = () => setOpen(false);
 

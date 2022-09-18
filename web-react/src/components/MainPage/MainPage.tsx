@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { USER_API } from "../../consts";
 import { AlbumGrid } from "../AlbumGrid";
-import useAxiosFetch from "../../hooks/useAxiosFetch";
+import { useAxiosFetch } from "../../hooks";
 interface IUser {
   email: string;
   name?: string;

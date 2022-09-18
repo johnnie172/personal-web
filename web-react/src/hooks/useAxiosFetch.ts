@@ -9,7 +9,7 @@ const useAxiosFetch = (
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [reRender, setRerender] = useState(rerender);
+  const [fetch, setFetch] = useState(rerender);
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -19,7 +19,7 @@ const useAxiosFetch = (
     if (axiosParams !== null) config["params"] = axiosParams;
 
     const fetchData = async () => {
-      if (!reRender) return;
+      if (!fetch) return;
       await axios(api, config)
         .then((res) => {
           setData(res.data);
@@ -38,12 +38,12 @@ const useAxiosFetch = (
     fetchData();
     return () => source.cancel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reRender]);
+  }, [fetch]);
   return {
     data,
     loading,
     error,
-    setRerender,
+    setFetch,
   };
 };
 

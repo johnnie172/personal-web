@@ -13,7 +13,7 @@ import {
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { ProjectPage } from "../ProjectPage";
 import { PROJECTS_API } from "../../consts";
-import useAxiosFetch from "../../hooks/useAxiosFetch";
+import { useAxiosFetch } from "../../hooks";
 
 interface IProject {
   id: number;
