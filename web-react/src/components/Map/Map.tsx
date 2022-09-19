@@ -1,7 +1,6 @@
-import { useEffect } from "react";
 import { Map as MapBox, Layer, Source } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MAPBOX_TOKEN, LOCATIONS_API, USER_EMAIL } from "../../consts";
+import { MAPBOX_TOKEN, LOCATIONS_API } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
 import { LinearProgress, Typography } from "@mui/material";
 
@@ -44,7 +43,7 @@ const Mapbox = ({ locations }: { locations: number[][][] }) => (
       zoom: 10,
     }}
     style={{ width: "90vw", height: "70vh", margin: "auto" }}
-    mapStyle="mapbox://styles/mapbox/streets-v9"
+    mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
     mapboxAccessToken={MAPBOX_TOKEN}
   >
     {locations.map((coords, index) => (
