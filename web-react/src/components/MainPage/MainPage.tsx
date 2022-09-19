@@ -11,20 +11,15 @@ import { AlbumGrid } from "../AlbumGrid";
 import { useAxiosFetch } from "../../hooks";
 interface IUser {
   email: string;
-  name?: string;
+  first_name?: string;
   last_name?: string;
   title?: string;
   description?: string;
 }
 
 const MainPage = () => {
-  const { data, loading, error } = useAxiosFetch(
-    USER_API,
-    null,
-    true
-  );
+  const { data, loading, error } = useAxiosFetch(USER_API, null, true);
   const user: IUser = data;
-
   return (
     <main>
       <Box
@@ -51,7 +46,7 @@ const MainPage = () => {
               color="text.primary"
               gutterBottom
             >
-              {`${user?.name || ""} ${user?.last_name || ""} ${
+              {`${user?.first_name || ""} ${user?.last_name || ""} ${
                 user?.title || ""
               }`}
             </Typography>

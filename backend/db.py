@@ -1,6 +1,6 @@
 import os
 from pymongo import MongoClient
-
+import typing
 class MongoDB(object):
 
     def __init__(self, db_name):
@@ -16,9 +16,9 @@ class MongoDB(object):
     DB_CONNECTION = f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@{MONGO_URL}/?retryWrites=true&w=majority"
     DB_PORT       = 27017
 
-    def connect(self):
+    def connect(self) -> None:
         self.client = MongoClient(self.DB_CONNECTION, self.DB_PORT, maxPoolSize=50)
         self.db = self.client[self.db_name]
 
-    def get_one(self, collection: str, query: dict) -> dict:
-        return self.db[collection].find_one(query)
+    def get_one(self, collection: str, query: dict, project: typing.Optional[dict]=None) -> dict:
+        return self.db[collection].find_one(query, project)

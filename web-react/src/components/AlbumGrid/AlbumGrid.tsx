@@ -27,7 +27,7 @@ interface IProject {
 const AlbumGrid = () => {
   const { data, loading, error } = useAxiosFetch(PROJECTS_API, null, true);
   const projects: Array<IProject> =
-    Object.keys(data).length !== 0 ? data : [{ id: -1 }];
+    Object.keys(data).length !== 0 ? data : [];
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
