@@ -4,7 +4,8 @@ from flask import Flask, jsonify, request, render_template, make_response, redir
 from flask_cors import CORS
 from db import MongoDB
 from requests_utils import get_data_from_url
-
+from functools import wraps
+import re
 ### type of responses ###
 # projects = [
 #     {
@@ -64,13 +65,22 @@ from requests_utils import get_data_from_url
 #     "johnathan.maytliss@gmail.com": [ramat_gan, tlv, givatayim]
 # }
 
+def check_valid_mail(fn):
+    """function to check the validation of route email paramter"""
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", kwargs.get('user_email')):
+            return 'invalid email', 400
+        return fn(*args, **kwargs)
+    return decorated_view
+
 app = Flask(__name__)
 CORS(app)
 mongo = MongoDB("personal-web")
 mongo.connect()
 
-#TODO: wrapper to chack url values
 @app.route('/user/<string:user_email>', methods=['GET'])
+@check_valid_mail
 def get_user(user_email):
     if user_email:
         user = mongo.get_one("user", {"email": user_email}, { "projects": 0})
@@ -82,6 +92,7 @@ def get_user(user_email):
     return 'bad request', 400
 
 @app.route('/user/<string:user_email>/locations', methods=['GET'])
+@check_valid_mail
 def get_user_locations(user_email):
     # get locations from db if user else return error
     if user_email:
