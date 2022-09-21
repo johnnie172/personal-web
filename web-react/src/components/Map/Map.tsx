@@ -1,4 +1,5 @@
-import { Map as MapBox, Layer, Source } from "react-map-gl";
+import { useEffect, useMemo, useRef } from "react";
+import { Map as MapBox, Layer, Source, MapRef } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, LOCATIONS_API } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
@@ -34,17 +35,23 @@ const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
   </Source>
 );
 
-const Mapbox = ({ locations }: { locations: number[][][] }) => (
+const Mapbox = ({
+  locations,
+  mapRef,
+}: {
+  locations: number[][][];
+  mapRef: React.MutableRefObject<MapRef | null>;
+}) => (
   <MapBox
     initialViewState={{
-      longitude: 34.855499,
-      latitude: 32.109333,
-      //TODO: get center
+      longitude: 0,
+      latitude: 0,
       zoom: 10,
     }}
     style={{ width: "90vw", height: "70vh", margin: "auto" }}
     mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
     mapboxAccessToken={MAPBOX_TOKEN}
+    ref={mapRef}
   >
     {locations.map((coords, index) => (
       <Polygon key={index} locations={coords} id={index}></Polygon>
@@ -54,9 +61,19 @@ const Mapbox = ({ locations }: { locations: number[][][] }) => (
 
 const Map = () => {
   const { data, loading, error } = useAxiosFetch(LOCATIONS_API, null, true);
+  const mapRef = useRef<MapRef | null>(null);
+  const locations = useMemo<number[][][] | []>(
+    () => (Object.keys(data).length !== 0 ? data : []),
+    [data]
+  );
 
-  const locations: number[][][] | [] =
-    Object.keys(data).length !== 0 ? data : [];
+  useEffect(() => {
+    mapRef.current?.flyTo({
+      //TODO: get center
+      center: [locations[0][0][0], locations[0][0][1]],
+      duration: 3000,
+    });
+  }, [locations]);
 
   return loading ? (
     <LinearProgress />
@@ -67,7 +84,7 @@ const Map = () => {
       color="error"
     >{`${error}`}</Typography>
   ) : locations ? (
-    <Mapbox locations={locations}></Mapbox>
+    <Mapbox locations={locations} mapRef={mapRef}></Mapbox>
   ) : (
     <></>
   );
