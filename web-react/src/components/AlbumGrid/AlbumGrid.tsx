@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { ProjectPage } from "../ProjectPage";
-import { PROJECTS_API } from "../../consts";
+import { PROJECTS_API, USER_EMAIL } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
 
 interface IProject {
@@ -20,12 +20,17 @@ interface IProject {
   title?: string;
   description?: string;
   img?: string;
+  img64?: string
   link?: string;
   git?: string;
 }
 
+const chooseImg = ([img64, img]: Array<string | undefined> | []) : string => {
+  return img64 ? `data:image/webp;base64,${img64}` : img ? img : ""
+}
+
 const AlbumGrid = () => {
-  const { data, loading, error } = useAxiosFetch(PROJECTS_API, null, true);
+  const { data, loading, error } = useAxiosFetch(`${PROJECTS_API}/${USER_EMAIL}`, null, true);
   const projects: Array<IProject> =
     Object.keys(data).length !== 0 ? data : [];
 
@@ -57,8 +62,8 @@ const AlbumGrid = () => {
                   sx={{
                     pt: 3,
                   }}
-                  image={project?.img}
-                  alt="random"
+                  image={chooseImg([project?.img64, project?.img])}
+                  alt={`img-${project.id}`}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography

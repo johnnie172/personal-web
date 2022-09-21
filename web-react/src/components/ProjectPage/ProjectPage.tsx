@@ -16,6 +16,7 @@ import {
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
+    margin: "auto",
   },
   "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
