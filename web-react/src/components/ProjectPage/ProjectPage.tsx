@@ -57,11 +57,7 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-interface Props {
-  api: string;
-}
-
-const ProjectPage: React.FC<Props> = ({ api }) => {
+const ProjectPage = ({ api }: { api: string }) => {
   const { data, loading, error, setFetch } = useAxiosFetch(api, null, false);
   const [open, setOpen] = useState(false);
 
@@ -74,7 +70,7 @@ const ProjectPage: React.FC<Props> = ({ api }) => {
   return (
     <>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Open Project
+        More Info
       </Button>
       <StyledDialog
         onClose={handleClose}
@@ -86,7 +82,7 @@ const ProjectPage: React.FC<Props> = ({ api }) => {
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          {loading ? "Loading" : `Project ${data?.id}`}
+          {loading ? "Loading" : `Project ${data?.project_id}`}
         </BootstrapDialogTitle>
         {loading ? (
           <StyledDialogContent dividers>
@@ -101,7 +97,7 @@ const ProjectPage: React.FC<Props> = ({ api }) => {
         ) : (
           <>
             <StyledDialogContent dividers>
-              <Typography gutterBottom></Typography>
+              <Typography gutterBottom>{data?.additional_info}</Typography>
               <Typography gutterBottom></Typography>
               <Typography gutterBottom></Typography>
             </StyledDialogContent>

@@ -1,4 +1,3 @@
-from time import sleep
 from flask import Flask
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
 from flask_cors import CORS
@@ -37,26 +36,30 @@ def check_valid_mail(fn):
         return fn(*args, **kwargs)
     return decorated_view
 
+
 app = Flask(__name__)
 CORS(app)
 mongo = MongoDB("personal-web")
 mongo.connect()
 
+
 @app.route('/user/<string:user_email>', methods=['GET'])
 @check_valid_mail
 def get_user(user_email):
-    user = mongo.get_one("user", {"email": user_email}, { "projects": 0})
+    user = mongo.get_one("user", {"email": user_email}, {
+                         "projects": 0, "_id": 0})
     if user:
-        user.pop("_id")
         return jsonify(user), 200
     else:
         return 'user not found', 400
+
 
 @app.route('/user/<string:user_email>/locations', methods=['GET'])
 @check_valid_mail
 def get_user_locations(user_email):
     # get locations from db if user else return error
-    locations_names = mongo.get_one("user", {"email": user_email}, { "locations": 1})
+    locations_names = mongo.get_one(
+        "user", {"email": user_email}, {"locations": 1})
 
     # get location data for each location
     locations_to_return = []
@@ -66,23 +69,32 @@ def get_user_locations(user_email):
 
         # parse data to get only coords if there is data
         if location_data.__class__.__name__ == "list" and len(location_data) > 0:
-            locations_to_return.append(location_data[0].get("geojson", []).get("coordinates", [])[0])
+            locations_to_return.append(location_data[0].get(
+                "geojson", []).get("coordinates", [])[0])
 
     # return locations data or error message
     if len(locations_to_return) > 0:
         return (jsonify(locations_to_return), 200)
     return 'locations not found', 400
 
+
 @app.route('/projects/<string:user_email>', methods=['GET'])
 @check_valid_mail
 def get_all_projects(user_email):
-    projects = mongo.get_one("user", {"email": user_email}, { "projects": 1}).get("projects")
+    projects = mongo.get_one("user", {"email": user_email}, {
+                             "projects": 1}).get("projects")
     if projects:
         return jsonify(projects), 200
     else:
         return 'projects not found', 400
 
-@app.route('/projects/<int:project_id>')
-def get_project(project_id):
-    sleep(1)
-    return jsonify({"id": project_id}), 200
+
+@app.route('/projects/<string:user_email>/<int:project_id>', methods=['GET'])
+@check_valid_mail
+def get_project_by_id(user_email, project_id):
+    project = mongo.get_one("user-data",
+                            {"email": user_email, "project_id": project_id}, {"_id": 0})
+    if project:
+        return jsonify(project), 200
+    else:
+        return 'project not found', 400

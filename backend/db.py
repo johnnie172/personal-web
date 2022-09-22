@@ -22,3 +22,8 @@ class MongoDB(object):
 
     def get_one(self, collection: str, query: dict, project: typing.Optional[dict]=None) -> dict:
         return self.db[collection].find_one(query, project)
+
+    def get_first_one(self, collection, query):
+        cur = self.db[collection].find(query)
+        for x in cur:
+            return x

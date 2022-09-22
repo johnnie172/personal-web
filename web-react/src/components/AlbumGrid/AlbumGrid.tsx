@@ -20,19 +20,23 @@ interface IProject {
   title?: string;
   description?: string;
   img?: string;
-  img64?: string
+  img64?: string;
   link?: string;
   git?: string;
+  additional_info: boolean;
 }
 
-const chooseImg = ([img64, img]: Array<string | undefined> | []) : string => {
-  return img64 ? `data:image/webp;base64,${img64}` : img ? img : ""
-}
+const chooseImg = ([img64, img]: Array<string | undefined> | []): string => {
+  return img64 ? `data:image/webp;base64,${img64}` : img ? img : "";
+};
 
 const AlbumGrid = () => {
-  const { data, loading, error } = useAxiosFetch(`${PROJECTS_API}/${USER_EMAIL}`, null, true);
-  const projects: Array<IProject> =
-    Object.keys(data).length !== 0 ? data : [];
+  const { data, loading, error } = useAxiosFetch(
+    `${PROJECTS_API}/${USER_EMAIL}`,
+    null,
+    true
+  );
+  const projects: Array<IProject> = Object.keys(data).length !== 0 ? data : [];
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
@@ -79,9 +83,11 @@ const AlbumGrid = () => {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <ProjectPage
-                    api={`${PROJECTS_API}/${project.id}`}
-                  ></ProjectPage>
+                  {project?.additional_info && (
+                    <ProjectPage
+                      api={`${PROJECTS_API}/${USER_EMAIL}/${project.id}`}
+                    ></ProjectPage>
+                  )}
                   {project?.git && (
                     <Button
                       variant="outlined"
