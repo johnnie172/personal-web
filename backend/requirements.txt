@@ -13,3 +13,4 @@ typing-extensions==3.7.4.2
 urllib3==1.25.9
 flask_cors==3.0.10
 requests==2.25.1
+python-dotenv==0.21.0

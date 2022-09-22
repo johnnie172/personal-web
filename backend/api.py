@@ -4,7 +4,8 @@ from flask_cors import CORS
 from db import MongoDB
 from requests_utils import get_data_from_url
 from functools import wraps
-import re
+from dotenv import load_dotenv
+from re import match
 ### type of user db ###
 # users = {
 #     1: {
@@ -31,17 +32,16 @@ def check_valid_mail(fn):
     """function to check the validation of route email parameter"""
     @wraps(fn)
     def decorated_view(*args, **kwargs):
-        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", kwargs.get('user_email')):
+        if not match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", kwargs.get('user_email')):
             return 'invalid email', 400
         return fn(*args, **kwargs)
     return decorated_view
 
-
+load_dotenv()
 app = Flask(__name__)
 CORS(app)
 mongo = MongoDB("personal-web")
 mongo.connect()
-
 
 @app.route('/user/<string:user_email>', methods=['GET'])
 @check_valid_mail
