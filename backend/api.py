@@ -6,6 +6,7 @@ from requests_utils import get_data_from_url
 from functools import wraps
 from dotenv import load_dotenv
 from re import match
+from geojson_utilities import get_center_from_degrees
 ### type of user db ###
 # users = {
 #     1: {
@@ -72,9 +73,23 @@ def get_user_locations(user_email):
             locations_to_return.append(location_data[0].get(
                 "geojson", []).get("coordinates", [])[0])
 
+            # get center of each location
+            locations_center = []
+            lat = location_data[0].get("lat")
+            lon = location_data[0].get("lon")
+            if lat and lon:
+                locations_center.append([float(lon), float(lat)])
+
+            # get center of all locations [lat, lon]
+            center_point = get_center_from_degrees(locations_center)
+
     # return locations data or error message
-    if len(locations_to_return) > 0:
-        return (jsonify(locations_to_return), 200)
+    data = {
+        "center": center_point if center_point else [0,0],
+        "locations": locations_to_return
+    }
+    if len(data["locations"]) > 0:
+        return (jsonify(data), 200)
     return 'locations not found', 400
 
 

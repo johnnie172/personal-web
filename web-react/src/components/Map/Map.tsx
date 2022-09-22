@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef } from "react";
-import { Map as MapBox, Layer, Source, MapRef } from "react-map-gl";
+import { Map as MapBox, Layer, Source, MapRef, LngLatLike } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, LOCATIONS_API } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
 import { LinearProgress, Typography } from "@mui/material";
+
+interface ILocationsData {
+  center: LngLatLike;
+  locations: number[][][] | []
+}
 
 const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
   <Source
@@ -36,10 +41,10 @@ const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
 );
 
 const Mapbox = ({
-  locations,
+  locations_data,
   mapRef,
 }: {
-  locations: number[][][];
+  locations_data: ILocationsData;
   mapRef: React.MutableRefObject<MapRef | null>;
 }) => (
   <MapBox
@@ -53,7 +58,7 @@ const Mapbox = ({
     mapboxAccessToken={MAPBOX_TOKEN}
     ref={mapRef}
   >
-    {locations.map((coords, index) => (
+    {locations_data.locations.map((coords, index) => (
       <Polygon key={index} locations={coords} id={index}></Polygon>
     ))}
   </MapBox>
@@ -62,18 +67,18 @@ const Mapbox = ({
 const Map = () => {
   const { data, loading, error } = useAxiosFetch(LOCATIONS_API, null, true);
   const mapRef = useRef<MapRef | null>(null);
-  const locations = useMemo<number[][][] | []>(
-    () => (Object.keys(data).length !== 0 ? data : []),
+  const locations_data = useMemo<ILocationsData>(
+    () => (Object.keys(data).length !== 0 ? data : {locations: [], center: [0,0]}),
     [data]
   );
 
   useEffect(() => {
     mapRef.current?.flyTo({
-      //TODO: get center
-      center: [locations[0][0][0], locations[0][0][1]],
+      center: locations_data.center,
       duration: 3000,
     });
-  }, [locations]);
+    console.log(locations_data)
+  }, [locations_data]);
 
   return loading ? (
     <LinearProgress />
@@ -83,8 +88,8 @@ const Map = () => {
       align="center"
       color="error"
     >{`${error}`}</Typography>
-  ) : locations ? (
-    <Mapbox locations={locations} mapRef={mapRef}></Mapbox>
+  ) : locations_data ? (
+    <Mapbox locations_data={locations_data} mapRef={mapRef}></Mapbox>
   ) : (
     <></>
   );
