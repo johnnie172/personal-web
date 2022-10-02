@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Map as MapBox, Layer, Source, MapRef, LngLatLike } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN, LOCATIONS_API } from "../../consts";
@@ -7,7 +7,7 @@ import { LinearProgress, Typography } from "@mui/material";
 
 interface ILocationsData {
   center: LngLatLike;
-  locations: number[][][] | []
+  locations: number[][][] | [];
 }
 
 const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
@@ -43,9 +43,13 @@ const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
 const Mapbox = ({
   locations_data,
   mapRef,
+  setMapLoading,
+  children,
 }: {
   locations_data: ILocationsData;
   mapRef: React.MutableRefObject<MapRef | null>;
+  setMapLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  children?: React.ReactNode;
 }) => (
   <MapBox
     initialViewState={{
@@ -57,7 +61,9 @@ const Mapbox = ({
     mapStyle="mapbox://styles/mapbox/satellite-streets-v11"
     mapboxAccessToken={MAPBOX_TOKEN}
     ref={mapRef}
+    onLoad={() => setMapLoading(false)}
   >
+    {children}
     {locations_data.locations.map((coords, index) => (
       <Polygon key={index} locations={coords} id={index}></Polygon>
     ))}
@@ -65,10 +71,12 @@ const Mapbox = ({
 );
 
 const Map = () => {
-  const { data, loading, error } = useAxiosFetch(LOCATIONS_API, null, true);
+  const { data, loading, error } = useAxiosFetch(LOCATIONS_API);
   const mapRef = useRef<MapRef | null>(null);
+  const [mapLoading, setMapLoading] = useState(true);
   const locations_data = useMemo<ILocationsData>(
-    () => (Object.keys(data).length !== 0 ? data : {locations: [], center: [0,0]}),
+    () =>
+      Object.keys(data).length !== 0 ? data : { locations: [], center: [0, 0] },
     [data]
   );
 
@@ -77,19 +85,27 @@ const Map = () => {
       center: locations_data.center,
       duration: 3000,
     });
-    console.log(locations_data)
   }, [locations_data]);
 
-  return loading ? (
-    <LinearProgress />
-  ) : error ? (
-    <Typography
-      variant="h4"
-      align="center"
-      color="error"
-    >{`${error}`}</Typography>
-  ) : locations_data ? (
-    <Mapbox locations_data={locations_data} mapRef={mapRef}></Mapbox>
+  return locations_data ? (
+    <Mapbox
+      locations_data={locations_data}
+      mapRef={mapRef}
+      setMapLoading={setMapLoading}
+    >
+      {loading || mapLoading ? (
+        <LinearProgress sx={{ zIndex: 999, position: "inherit" }} />
+      ) : error ? (
+        <Typography
+          variant="h4"
+          align="center"
+          color="error"
+          sx={{ zIndex: 999, position: "inherit" }}
+        >{`${error}`}</Typography>
+      ) : (
+        <></>
+      )}
+    </Mapbox>
   ) : (
     <></>
   );
