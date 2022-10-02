@@ -31,11 +31,10 @@ const chooseImg = ([img64, img]: Array<string | undefined> | []): string => {
 };
 
 const AlbumGrid = () => {
-  const { data, loading, error } = useAxiosFetch(
-    `${PROJECTS_API}/${USER_EMAIL}`,
-    null,
-    true
-  );
+  const axiosParams = {
+    api: `${PROJECTS_API}/${USER_EMAIL}`,
+  };
+  const { data, loading, error } = useAxiosFetch(axiosParams);
   const projects: Array<IProject> = Object.keys(data).length !== 0 ? data : [];
 
   return (

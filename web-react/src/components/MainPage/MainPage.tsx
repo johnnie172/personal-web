@@ -18,7 +18,10 @@ interface IUser {
 }
 
 const MainPage = () => {
-  const { data, loading, error } = useAxiosFetch(USER_API);
+  const axiosParams = {
+    api: USER_API,
+  };
+  const { data, loading, error } = useAxiosFetch(axiosParams);
   const user: IUser = data;
   return (
     <main>

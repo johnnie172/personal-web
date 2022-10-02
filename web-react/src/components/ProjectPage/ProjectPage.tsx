@@ -58,7 +58,11 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
 };
 
 const ProjectPage = ({ api }: { api: string }) => {
-  const { data, loading, error, setFetch } = useAxiosFetch(api, null, false);
+  const axiosParams = {
+    api: api,
+    fetch: false
+  };
+  const { data, loading, error, setFetch } = useAxiosFetch(axiosParams);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {

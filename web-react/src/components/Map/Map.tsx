@@ -71,7 +71,10 @@ const Mapbox = ({
 );
 
 const Map = () => {
-  const { data, loading, error } = useAxiosFetch(LOCATIONS_API);
+  const axiosParams = {
+    api: LOCATIONS_API,
+  }
+  const { data, loading, error } = useAxiosFetch(axiosParams);
   const mapRef = useRef<MapRef | null>(null);
   const [mapLoading, setMapLoading] = useState(true);
   const locations_data = useMemo<ILocationsData>(
