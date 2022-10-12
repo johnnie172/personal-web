@@ -23,6 +23,7 @@ const App = () => {
   const NavButton = () => {
     return (
       <Button
+        id="btn-theme"
         onClick={() => setLocalTheme(localTheme === "light" ? "dark" : "light")}
         sx={{ color: "#fff" }}
       >
