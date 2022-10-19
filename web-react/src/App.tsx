@@ -10,10 +10,26 @@ import { useLocalStorage } from "./hooks";
 import { MainPage } from "./components/MainPage";
 import { AppBar } from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
-import { Map } from "./components/Map"
+import { Map } from "./components/Map";
+import { USER_API } from "./consts";
+import { useAxiosFetch } from "./hooks";
+import { isEmptyObj } from "./utilities";
+
+export interface User {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  title?: string;
+  description?: string;
+}
 
 const home_paths = ["home", "/"];
+
 const App = () => {
+  const axiosParams = {
+    api: USER_API,
+  };
+  const { data, loading, error } = useAxiosFetch(axiosParams);
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [localTheme, setLocalTheme] = useLocalStorage<"dark" | "light">(
     "theme",
@@ -23,6 +39,7 @@ const App = () => {
   const NavButton = () => {
     return (
       <Button
+        id="btn-theme"
         onClick={() => setLocalTheme(localTheme === "light" ? "dark" : "light")}
         sx={{ color: "#fff" }}
       >
@@ -51,12 +68,29 @@ const App = () => {
         </AppBar>
         <Routes>
           {home_paths.map((path) => (
-            <Route key={path} path={path} element={<MainPage />} />
+            <Route
+              key={path}
+              path={path}
+              element={
+                <MainPage {...{ user: data, loading, error }}/>
+              }
+            />
           ))}
-          <Route path="/Contact" element={<>Unavailable</>}></Route>
+          <Route
+            path="/Contact"
+            element={<>{data?.email || "Unavailable"}</>}
+          ></Route>
           <Route path="/Locations" element={<Map />}></Route>
         </Routes>
-        <AppFooter />
+        {!isEmptyObj(data) && (
+          <AppFooter
+            {...{
+              title: `${data?.first_name} ${data?.last_name}`,
+              subtitle: "subtitle",
+              link: "",
+            }}
+          />
+        )}
       </div>
     </ThemeProvider>
   );

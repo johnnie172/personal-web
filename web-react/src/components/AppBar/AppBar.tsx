@@ -16,7 +16,7 @@ const AppBar: React.FC<Props> = ({ children }) => {
   const pages = ["Home", "Contact", "Locations"];
 
   return (
-    <MuiAppBar position="sticky">
+    <MuiAppBar position="sticky" id="navbar">
       <Toolbar>
         <Computer sx={{ mr: 2 }} />
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>

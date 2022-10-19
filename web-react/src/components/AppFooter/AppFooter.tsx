@@ -1,11 +1,22 @@
 import { Box, Typography, Link } from "@mui/material";
 
-const Copyright = () => {
+interface Props {
+  title: string;
+  subtitle: string;
+  link: string;
+}
+
+const Copyright: React.FC<{link: Props["link"]}> = ({link}) => {
   return (
-    <Typography variant="body2" color="text.secondary" align="center">
+    <Typography
+      id="footer-copyright"
+      variant="body2"
+      color="text.secondary"
+      align="center"
+    >
       {"Copyright © "}
-      <Link color="inherit" href="/">
-        Your Website
+      <Link color="inherit" href={link}>
+        Home
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -13,21 +24,25 @@ const Copyright = () => {
   );
 };
 
-const AppFooter = () => {
+
+
+const AppFooter: React.FC<Props> = ({ title, subtitle, link }) => {
   return (
     <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-      <Typography variant="h6" align="center" gutterBottom>
-        Footer
+      <Typography id="footer-title" variant="h6" align="center" gutterBottom>
+        {title}
       </Typography>
       <Typography
+        id="footer-subtitle"
         variant="subtitle1"
         align="center"
         color="text.secondary"
         component="p"
       >
-        Something here to give the footer a purpose!
+        {/* TODO: add desc for db */}
+        {subtitle}
       </Typography>
-      <Copyright />
+      <Copyright link={link || "/"} />
     </Box>
   );
 };

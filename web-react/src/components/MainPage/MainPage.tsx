@@ -6,23 +6,17 @@ import {
   Typography,
   Container,
 } from "@mui/material";
-import { USER_API } from "../../consts";
 import { AlbumGrid } from "../AlbumGrid";
-import { useAxiosFetch } from "../../hooks";
-interface IUser {
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  title?: string;
-  description?: string;
+import {User} from "../../App"
+
+interface Props {
+  user:User;
+  loading: boolean;
+  error: string;
 }
 
-const MainPage = () => {
-  const axiosParams = {
-    api: USER_API,
-  };
-  const { data, loading, error } = useAxiosFetch(axiosParams);
-  const user: IUser = data;
+const MainPage : React.FC<Props> = ({user, loading, error}) => {
+
   return (
     <main>
       <Box
