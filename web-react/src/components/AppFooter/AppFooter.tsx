@@ -1,30 +1,11 @@
-import { Box, Typography, Link } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { Copyright } from ".";
 
 interface Props {
   title: string;
   subtitle: string;
   link: string;
 }
-
-const Copyright: React.FC<{link: Props["link"]}> = ({link}) => {
-  return (
-    <Typography
-      id="footer-copyright"
-      variant="body2"
-      color="text.secondary"
-      align="center"
-    >
-      {"Copyright © "}
-      <Link color="inherit" href={link}>
-        Home
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-};
-
-
 
 const AppFooter: React.FC<Props> = ({ title, subtitle, link }) => {
   return (

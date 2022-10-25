@@ -1,4 +1,4 @@
-import { Computer } from "@mui/icons-material";
+import { Computer as ComputerIcon } from "@mui/icons-material";
 import {
   Typography,
   Toolbar,
@@ -18,7 +18,7 @@ const AppBar: React.FC<Props> = ({ children }) => {
   return (
     <MuiAppBar position="sticky" id="navbar">
       <Toolbar>
-        <Computer sx={{ mr: 2 }} />
+        <ComputerIcon sx={{ mr: 2 }} />
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
           {pages.map((page) => (
             <Button key={page} sx={{ my: 2, color: "white", display: "block" }}>

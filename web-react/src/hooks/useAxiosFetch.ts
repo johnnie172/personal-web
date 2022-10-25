@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 
-interface IParameters {
+interface Parameters {
   api: string;
   axiosParams?: { [key: string]: string };
   fetch?: boolean;
   timeOut?: number;
 }
 
-const useAxiosFetch = (
-  paramObj: IParameters
-) => {
+const useAxiosFetch = (paramObj: Parameters) => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,14 +20,15 @@ const useAxiosFetch = (
     const config: AxiosRequestConfig<any> = {
       cancelToken: source.token,
     };
-    if (paramObj?.axiosParams !== null) config["params"] = paramObj?.axiosParams;
+    if (paramObj?.axiosParams !== null)
+      config["params"] = paramObj?.axiosParams;
     const fetchData = async () => {
       if (!fetch) return false;
       await axios(paramObj.api, config)
         .then((res) => {
           setData(res.data);
           setLoading(false);
-          setError("")
+          setError("");
         })
         .catch((err) => {
           setLoading(false);
@@ -45,9 +44,9 @@ const useAxiosFetch = (
     fetchData();
 
     // set retry timer
-    const timer = setTimeout(()=> {
-      toRetry && setToRetry(false)
-    }, paramObj?.timeOut ?? 5000)
+    const timer = setTimeout(() => {
+      toRetry && setToRetry(false);
+    }, paramObj?.timeOut ?? 5000);
 
     return () => {
       // clear fetch request and timer

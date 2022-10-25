@@ -15,7 +15,7 @@ import { ProjectPage } from "../ProjectPage";
 import { PROJECTS_API, USER_EMAIL } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
 
-interface IProject {
+interface Project {
   id: number;
   title?: string;
   description?: string;
@@ -35,7 +35,7 @@ const AlbumGrid = () => {
     api: `${PROJECTS_API}/${USER_EMAIL}`,
   };
   const { data, loading, error } = useAxiosFetch(axiosParams);
-  const projects: Array<IProject> = Object.keys(data).length !== 0 ? data : [];
+  const projects: Array<Project> = Object.keys(data).length !== 0 ? data : [];
 
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">

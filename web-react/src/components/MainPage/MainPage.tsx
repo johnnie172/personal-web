@@ -1,22 +1,20 @@
 import {
   LinearProgress,
-  Button,
   Stack,
   Box,
   Typography,
   Container,
 } from "@mui/material";
 import { AlbumGrid } from "../AlbumGrid";
-import {User} from "../../App"
+import { User } from "../../App";
 
 interface Props {
-  user:User;
+  user: User;
   loading: boolean;
   error: string;
 }
 
-const MainPage : React.FC<Props> = ({user, loading, error}) => {
-
+const MainPage: React.FC<Props> = ({ user, loading, error }) => {
   return (
     <main>
       <Box
@@ -60,10 +58,7 @@ const MainPage : React.FC<Props> = ({user, loading, error}) => {
               direction="row"
               spacing={2}
               justifyContent="center"
-            >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack>
+            ></Stack>
           </Container>
         )}
       </Box>

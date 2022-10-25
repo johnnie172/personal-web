@@ -36,7 +36,7 @@ const App = () => {
     prefersDarkMode ? "dark" : "light"
   );
 
-  const NavButton = () => {
+  const ThemeButton = () => {
     return (
       <Button
         id="btn-theme"
@@ -64,7 +64,7 @@ const App = () => {
       <div className="App">
         <header className="App-header"></header>
         <AppBar>
-          <NavButton />
+          <ThemeButton />
         </AppBar>
         <Routes>
           {home_paths.map((path) => (
