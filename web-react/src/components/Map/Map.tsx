@@ -1,46 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Map as MapBox, Layer, Source, MapRef, LngLatLike } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { MAPBOX_TOKEN, LOCATIONS_API } from "../../consts";
-import { useAxiosFetch } from "../../hooks";
 import { LinearProgress, Typography } from "@mui/material";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { LngLatLike, Map as MapBox, MapRef } from "react-map-gl";
+import { LOCATIONS_API, MAPBOX_TOKEN } from "../../consts";
+import { useAxiosFetch } from "../../hooks";
+import { Polygon } from "./"
 
 interface ILocationsData {
   center: LngLatLike;
   locations: number[][][] | [];
 }
 
-const Polygon = ({ locations, id }: { locations: number[][]; id: number }) => (
-  <Source
-    type="geojson"
-    data={{
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "MultiPolygon",
-            coordinates: [[locations]],
-          },
-        },
-      ],
-    }}
-  >
-    <Layer
-      {...{
-        id: `${id}`,
-        type: "fill",
-        paint: {
-          "fill-color": "#7CFC00",
-          "fill-opacity": 0.5,
-        },
-      }}
-    />
-  </Source>
-);
-
-const Mapbox = ({
+const MapboxWrapper = ({
   locations_data,
   mapRef,
   setMapLoading,
@@ -73,7 +44,7 @@ const Mapbox = ({
 const Map = () => {
   const axiosParams = {
     api: LOCATIONS_API,
-  }
+  };
   const { data, loading, error } = useAxiosFetch(axiosParams);
   const mapRef = useRef<MapRef | null>(null);
   const [mapLoading, setMapLoading] = useState(true);
@@ -90,8 +61,10 @@ const Map = () => {
     });
   }, [locations_data]);
 
-  return locations_data ? (
-    <Mapbox
+  return !locations_data ? (
+    <></>
+  ) : (
+    <MapboxWrapper
       locations_data={locations_data}
       mapRef={mapRef}
       setMapLoading={setMapLoading}
@@ -108,9 +81,7 @@ const Map = () => {
       ) : (
         <></>
       )}
-    </Mapbox>
-  ) : (
-    <></>
+    </MapboxWrapper>
   );
 };
 export default Map;

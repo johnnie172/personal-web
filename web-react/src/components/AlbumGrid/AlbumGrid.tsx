@@ -84,7 +84,7 @@ const AlbumGrid = () => {
                 <CardActions>
                   {project?.additional_info && (
                     <ProjectPage
-                      api={`${PROJECTS_API}/${USER_EMAIL}/${project.id}`}
+                      projectId={project.id}
                     ></ProjectPage>
                   )}
                   {project?.git && (

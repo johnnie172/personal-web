@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAxiosFetch } from "../../hooks";
+import { PROJECTS_API, USER_EMAIL } from "../../consts";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -57,9 +58,9 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-const ProjectPage = ({ api }: { api: string }) => {
+const ProjectPage = ({ projectId }: { projectId: number }) => {
   const axiosParams = {
-    api: api,
+    api: `${PROJECTS_API}/${USER_EMAIL}/${projectId}`,
     fetch: false
   };
   const { data, loading, error, setFetch } = useAxiosFetch(axiosParams);

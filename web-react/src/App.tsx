@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Button } from "@mui/material";
-import { Brightness3, Brightness7 } from "@mui/icons-material";
+import { Brightness3 as DarkModeIcon, Brightness7 as LightModeIcon } from "@mui/icons-material";
 import { Route, Routes } from "react-router-dom";
 import { useLocalStorage } from "./hooks";
 import { MainPage } from "./components/MainPage";
@@ -43,7 +43,7 @@ const App = () => {
         onClick={() => setLocalTheme(localTheme === "light" ? "dark" : "light")}
         sx={{ color: "#fff" }}
       >
-        {localTheme === "dark" ? <Brightness3 /> : <Brightness7 />}
+        {localTheme === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
       </Button>
     );
   };
