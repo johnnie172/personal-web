@@ -1,8 +1,8 @@
 # Developer Generic Project Website
 
-A website that that shows all your projects and additional information as a resume using a simple MongoDb schema
+A website that shows all your projects and additional information as a resume using a simple MongoDb schema
 
-## Build with
+## Built with
 
 ![](https://img.shields.io/badge/Frontend-React-informational?style=flat&logo=React&logoColor=white&color=birightgreen)
 ![](https://img.shields.io/badge/Frontend-TypeScript-informational?style=flat&logo=typescript&logoColor=white&color=birightgreen)
