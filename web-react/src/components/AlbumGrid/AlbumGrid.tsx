@@ -83,9 +83,7 @@ const AlbumGrid = () => {
                 </CardContent>
                 <CardActions>
                   {project?.additional_info && (
-                    <ProjectPage
-                      projectId={project.id}
-                    ></ProjectPage>
+                    <ProjectPage projectId={project.id}></ProjectPage>
                   )}
                   {project?.git && (
                     <Button

@@ -41,7 +41,7 @@ const MapboxWrapper = ({
   </MapBox>
 );
 
-const Map = () => {
+export const Map = () => {
   const axiosParams = {
     api: LOCATIONS_API,
   };
@@ -84,4 +84,3 @@ const Map = () => {
     </MapboxWrapper>
   );
 };
-export default Map;

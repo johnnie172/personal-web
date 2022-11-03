@@ -10,6 +10,12 @@ from locations_utilities import get_locations_data
 # users = {
 #     1: {
 #         "email": "johnathan.maytliss@gmail.com",
+#         "contact_info": {
+                # email?: string;
+                # linkdin?: string;
+                # git?: string;
+                # phone?: string;
+#           }
 #         "first_name": "johnathan",
 #         "last_name": "maytliss",
 #         "title": "Johnathan Maytliss - Software Engineer",
@@ -52,6 +58,7 @@ mongo = MongoDB("personal-web")
 def get_user(user_email):
     user = mongo.get_one("user", {"email": user_email}, {
                          "projects": 0, "_id": 0})
+
     return (jsonify(user), HTTPStatus.OK) if user else ('user not found', HTTPStatus.NOT_FOUND)
 
 

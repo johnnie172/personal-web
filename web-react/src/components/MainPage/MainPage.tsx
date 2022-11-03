@@ -8,13 +8,13 @@ import {
 import { AlbumGrid } from "../AlbumGrid";
 import { User } from "../../App";
 
-interface Props {
+interface MainPageProps {
   user: User;
   loading: boolean;
   error: string;
 }
 
-const MainPage: React.FC<Props> = ({ user, loading, error }) => {
+const MainPage: React.FC<MainPageProps> = ({ user, loading, error }) => {
   return (
     <main>
       <Box
