@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -15,6 +15,8 @@ import { useLocalStorage, useAxiosFetch } from "./hooks";
 import { MainPage } from "./components/MainPage";
 import { AppBar } from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
+import { LoginForm } from "./components/LoginForm";
+import { Modal } from "./components/Modal";
 const Contact = React.lazy(() => import("./components/Contact"));
 const Map = React.lazy(() => import("./components/Map"));
 
@@ -46,6 +48,7 @@ const App = () => {
     "theme",
     prefersDarkMode ? "dark" : "light"
   );
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const ThemeButton = () => {
     return (
@@ -55,6 +58,19 @@ const App = () => {
         sx={{ color: "#fff" }}
       >
         {localTheme === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
+      </Button>
+    );
+  };
+
+  const LoginButton = () => {
+    return (
+      <Button
+        onClick={() => {
+          setLoginModalOpen(!loginModalOpen);
+        }}
+        sx={{ color: "#fff" }}
+      >
+        Login
       </Button>
     );
   };
@@ -76,32 +92,40 @@ const App = () => {
         <header className="App-header"></header>
         <AppBar>
           <ThemeButton />
+          <LoginButton />
         </AppBar>
-        <Routes>
-          {home_paths.map((path) => (
+        <>
+          <Modal shouldOpen={loginModalOpen} setModalOpen={setLoginModalOpen}>
+            <LoginForm />
+          </Modal>
+          <Routes>
+            {home_paths.map((path) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  <MainPage {...{ user: data, loading, error }}>{}</MainPage>
+                }
+              />
+            ))}
             <Route
-              key={path}
-              path={path}
-              element={<MainPage {...{ user: data, loading, error }} />}
+              path="/Contact"
+              element={
+                <React.Suspense fallback={<LinearProgress />}>
+                  <Contact contactInfo={data.contact_info} />
+                </React.Suspense>
+              }
             />
-          ))}
-          <Route
-            path="/Contact"
-            element={
-              <React.Suspense fallback={<LinearProgress/>}>
-                <Contact contactInfo={data.contact_info} />
-              </React.Suspense>
-            }
-          />
-          <Route
-            path="/Locations"
-            element={
-              <React.Suspense fallback={<LinearProgress/>}>
-                <Map />
-              </React.Suspense>
-            }
-          ></Route>
-        </Routes>
+            <Route
+              path="/Locations"
+              element={
+                <React.Suspense fallback={<LinearProgress />}>
+                  <Map />
+                </React.Suspense>
+              }
+            ></Route>
+          </Routes>
+        </>
         {!isEmptyObj(data) && (
           <AppFooter
             {...{

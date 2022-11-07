@@ -12,9 +12,10 @@ interface MainPageProps {
   user: User;
   loading: boolean;
   error: string;
+  children?: React.ReactNode;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ user, loading, error }) => {
+const MainPage: React.FC<MainPageProps> = ({ user, loading, error, children }) => {
   return (
     <main>
       <Box
@@ -53,6 +54,7 @@ const MainPage: React.FC<MainPageProps> = ({ user, loading, error }) => {
             >
               {user?.description || ""}
             </Typography>
+            {children}
             <Stack
               sx={{ pt: 4 }}
               direction="row"
