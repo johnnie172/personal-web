@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig, AxiosError } from "axios";
 
 interface Parameters {
   api: string;
+  method?: "POST" | "GET";
+  data?: { [key: string]: string };
   axiosParams?: { [key: string]: string };
   fetch?: boolean;
   timeOut?: number;
 }
 
+// TODO: deconstruct
 const useAxiosFetch = (paramObj: Parameters) => {
   const [data, setData] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -22,30 +25,35 @@ const useAxiosFetch = (paramObj: Parameters) => {
     };
     if (paramObj?.axiosParams !== null)
       config["params"] = paramObj?.axiosParams;
+
+    //TODO: add the data & method
     const fetchData = async () => {
       if (!fetch) return false;
-      await axios(paramObj.api, config)
-        .then((res) => {
+      try {
+        const res = await axios(paramObj.api, config);
+        if (res.status == 200) {
           setData(res.data);
           setLoading(false);
           setError("");
-        })
-        .catch((err) => {
-          setLoading(false);
-          setToRetry(true);
-          if (axios.isCancel(err)) {
-            console.log("fetch request aborted.");
-          } else {
-            setError(err?.response?.data ?? "Error");
-            console.error(err);
-          }
-        });
+          return res;
+        }
+      } catch (err: any) {
+        // TODO: change type
+        setLoading(false);
+        setToRetry(true);
+        if (axios.isCancel(err)) {
+          console.log("fetch request aborted.");
+        } else {
+          setError(err?.response?.data ?? "Error");
+          console.error(err);
+        }
+      }
     };
     fetchData();
 
     // set retry timer
     const timer = setTimeout(() => {
-      toRetry && setToRetry(false);
+      if (toRetry) setToRetry(false);
     }, paramObj?.timeOut ?? 5000);
 
     return () => {

@@ -1,24 +1,89 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { LOGIN_API } from "../../consts";
 import {
   Box,
   Button,
   Checkbox,
   Container,
   FormControlLabel,
-  Grid,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
 
 const LoginForm = () => {
+  const [remember, setRemember] = useState(false);
+  const [error, setError] = useState(false);
+  const [token, setToken, removeToken] = useCookies(["access_token"]);
+
+  useEffect(() => {
+    if (!error) return;
+    console.log("error");
+  }, [error]);
+
+  const sendAuth = async (email: string, pass: string) => {
+    try {
+      const res = await axios({
+        method: "POST",
+        url: LOGIN_API,
+        data: {
+          email: email,
+          password: pass,
+        },
+      });
+      if (res.status == 200) {
+        return res.data;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  //TODO: this is test to delete
+  const checkAuth = async () => {
+    try {
+      const res = await axios({
+        method: "POST",
+        url: "http://127.0.0.1:5000/jwt",
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status == 200) {
+        // return res.data;
+        console.log(res.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // get form data
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const email = data.get("email");
+    const pass = data.get("password");
+    if (!email || !pass) {
+      alert("Please enter fields");
+      return;
+    }
+
+    // send data to api and set or remove token
+    (async () => {
+      const token = await sendAuth(String(email), String(pass));
+      if (token?.access_token) {
+        setToken("access_token", token?.access_token);
+        setError(false);
+        return;
+      }
+      setError(true);
+      removeToken("access_token");
+    })();
   };
 
   return (
@@ -56,7 +121,14 @@ const LoginForm = () => {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={
+              <Checkbox
+                id="remember"
+                value={remember}
+                color="primary"
+                onChange={() => setRemember(!remember)}
+              />
+            }
             label="Remember me"
           />
           <Button
@@ -67,18 +139,6 @@ const LoginForm = () => {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
     </Container>

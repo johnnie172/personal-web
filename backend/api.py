@@ -1,20 +1,24 @@
 from http import HTTPStatus
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from db import MongoDB
 from functools import wraps
 from dotenv import load_dotenv
 from re import match
+import os
+import datetime
 from locations_utilities import get_locations_data
+from utilities import hash_password
 ### type of user db ###
 # users = {
 #     1: {
 #         "email": "johnathan.maytliss@gmail.com",
 #         "contact_info": {
-                # email?: string;
-                # linkdin?: string;
-                # git?: string;
-                # phone?: string;
+# email?: string;
+# linkdin?: string;
+# git?: string;
+# phone?: string;
 #           }
 #         "first_name": "johnathan",
 #         "last_name": "maytliss",
@@ -48,9 +52,15 @@ def check_valid_mail(fn):
 
 
 load_dotenv()
-app = Flask(__name__)
+app = Flask(__name__)  # initialize flask app
 CORS(app)
-mongo = MongoDB("personal-web")
+
+mongo = MongoDB("personal-web")  # initialize Mongo access
+
+jwt = JWTManager(app)  # initialize JWTManager
+JWT_PASS = os.environ.get("JWT_PASS")
+app.config['JWT_SECRET_KEY'] = JWT_PASS
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 
 
 @app.route('/user/<string:user_email>', methods=['GET'])
@@ -91,4 +101,32 @@ def get_all_projects(user_email):
 def get_project_by_id(user_email, project_id):
     project = mongo.get_one("user-data",
                             {"email": user_email, "project_id": project_id}, {"_id": 0})
+
     return (jsonify(project), HTTPStatus.OK) if project else ('project not found', HTTPStatus.NOT_FOUND)
+
+#TODO: delete this
+@app.route('/jwt', methods=['POST'])
+@jwt_required()
+def add_one_project():
+    current_user = get_jwt_identity()
+    print(current_user)
+    return "ok"
+
+@app.route('/user/login', methods=['POST'])
+def user_login():
+    # get user details from request
+    user_email = request.json.get("email")
+    user_pass = request.json.get("password")
+
+    # create request hash password and get db hashed password
+    hashed_password = hash_password(user_pass)
+    db_password = mongo.get_one("user", {"email": user_email}, {
+        "password": 1}).get("password")
+
+    # if password matched send token to user
+    if hashed_password == db_password:
+        access_token = create_access_token(
+            identity=user_email)  # create jwt token
+        return jsonify(access_token=access_token), HTTPStatus.OK
+
+    return "wrong creds", HTTPStatus.UNAUTHORIZED
