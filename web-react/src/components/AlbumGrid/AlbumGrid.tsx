@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Container,
   Grid,
@@ -14,6 +15,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import { ProjectPage } from "../ProjectPage";
 import { PROJECTS_API, USER_EMAIL } from "../../consts";
 import { useAxiosFetch } from "../../hooks";
+import { useAuthContext } from "../../context/AuthContext";
 
 interface Project {
   id: number;
@@ -31,12 +33,35 @@ const chooseImg = ([img64, img]: Array<string | undefined> | []): string => {
 };
 
 const AlbumGrid = () => {
+  const {
+    userAuth: { isAuth },
+  } = useAuthContext();
   const axiosParams = {
     api: `${PROJECTS_API}/${USER_EMAIL}`,
   };
-  const { data, loading, error } = useAxiosFetch(axiosParams);
+  const { data, loading, error, setAxiosParams } = useAxiosFetch(axiosParams);
   const projects: Array<Project> = Object.keys(data).length !== 0 ? data : [];
 
+  const [projectsToEdit, setProjectsToEdit] = useState<Project | {}>({});
+  const handleEditClick = () => {
+    setAxiosParams({
+      ...axiosParams,
+      data: projectsToEdit,
+      method: "post",
+      fetch: true,
+    });
+  };
+
+  const changeElementText = (
+    e: React.FormEvent<HTMLHeadingElement>,
+    obj: any
+  ) => {
+    const objToAdd = {};
+    // TODO: check if project exists and create the felids to change
+    // @ts-expect-error
+    objToAdd[obj?.id] = { [obj?.field]: e?.currentTarget?.textContent };
+    setProjectsToEdit({ ...projectsToEdit, ...objToAdd });
+  };
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
       <Grid container spacing={4}>
@@ -74,6 +99,11 @@ const AlbumGrid = () => {
                     variant="h5"
                     component="h2"
                     textAlign={"center"}
+                    contentEditable
+                    suppressContentEditableWarning
+                    onInput={(e: React.FormEvent<HTMLHeadingElement>) =>
+                      changeElementText(e, { id: project.id, field: "title" })
+                    }
                   >
                     {project.title || "No title"}
                   </Typography>
@@ -96,6 +126,7 @@ const AlbumGrid = () => {
                       View Git
                     </Button>
                   )}
+                  {isAuth && <Button onClick={handleEditClick}>Update</Button>}
                 </CardActions>
               </Card>
             </Grid>

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios, { AxiosRequestConfig, AxiosError } from "axios";
+import { useAuthContext } from "../context/AuthContext";
 
 interface HookParameters extends AxiosRequestConfig {
   api: string;
-  axiosParams?: { [key: string]: string };
   fetch?: boolean;
   timeOut?: number;
 }
@@ -11,21 +11,24 @@ interface HookParameters extends AxiosRequestConfig {
 // TODO: deconstruct
 const useAxiosFetch = (paramObj: HookParameters) => {
   const [data, setData] = useState<any>({});
+  const [axiosParams, setAxiosParams] = useState(paramObj)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [fetch, setFetch] = useState(paramObj?.fetch ?? true);
+  const [fetch, setFetch] = useState(axiosParams?.fetch ?? true);
   const [toRetry, setToRetry] = useState(false);
+  const { userAuth } = useAuthContext();
 
   useEffect(() => {
     const source = axios.CancelToken.source();
     const config: AxiosRequestConfig<any> = {
       cancelToken: source.token,
-      method: paramObj?.method || "GET",
-      url: paramObj.api,
-      ...paramObj,
+      method: axiosParams?.method || "GET",
+      url: axiosParams.api,
+      ...axiosParams,
     };
-    if (paramObj?.axiosParams !== null)
-      config["params"] = paramObj?.axiosParams;
+    //TODO: add this to the above config declaration
+    if (userAuth?.isAuth)
+      config["headers"] ={ "Authorization":`Bearer ${userAuth.token}`};
 
     const fetchData = async () => {
       if (!fetch) return false;
@@ -52,7 +55,7 @@ const useAxiosFetch = (paramObj: HookParameters) => {
     // set retry timer
     const timer = setTimeout(() => {
       if (toRetry) setToRetry(false);
-    }, paramObj?.timeOut ?? 5000);
+    }, axiosParams?.timeOut ?? 5000);
 
     return () => {
       // clear fetch request and timer
@@ -60,12 +63,13 @@ const useAxiosFetch = (paramObj: HookParameters) => {
       clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetch, toRetry]);
+  }, [fetch, toRetry, axiosParams]);
   return {
     data,
     loading,
     error,
     setFetch,
+    setAxiosParams
   };
 };
 

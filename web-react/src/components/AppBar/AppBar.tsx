@@ -26,9 +26,7 @@ const AppBar: React.FC<Props> = ({ children }) => {
                 style={{ textDecoration: "none", color: "white" }}
                 to={`/${page}`}
               >
-                <Typography>
-                {page}
-                </Typography>
+                <Typography>{page}</Typography>
               </Link>
             </Button>
           ))}

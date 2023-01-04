@@ -11,12 +11,14 @@ import {
 import { Route, Routes } from "react-router-dom";
 import { USER_API } from "./consts";
 import { isEmptyObj } from "./utilities";
-import { useLocalStorage, useAxiosFetch } from "./hooks";
+import { useLocalStorage, useAxiosFetch, useUserAuth } from "./hooks";
 import { MainPage } from "./components/MainPage";
 import { AppBar } from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
 import { LoginForm } from "./components/LoginForm";
 import { Modal } from "./components/Modal";
+import { useAuthContext } from "./context/AuthContext";
+
 const Contact = React.lazy(() => import("./components/Contact"));
 const Map = React.lazy(() => import("./components/Map"));
 
@@ -39,6 +41,8 @@ export interface User {
 const home_paths = ["home", "/"];
 
 const App = () => {
+  const { userAuth } = useAuthContext();
+  const { logout } = useUserAuth();
   const axiosParams = {
     api: USER_API,
   };
@@ -75,6 +79,17 @@ const App = () => {
     );
   };
 
+  const LogoutButton = () => {
+    return (
+      <Button
+        onClick={logout}
+        sx={{ color: "#fff" }}
+      >
+        Logout
+      </Button>
+    );
+  };
+
   const theme = React.useMemo(
     () =>
       createTheme({
@@ -92,7 +107,7 @@ const App = () => {
         <header className="App-header"></header>
         <AppBar>
           <ThemeButton />
-          <LoginButton />
+          {userAuth.isAuth ? <LogoutButton /> : <LoginButton />}
         </AppBar>
         <>
           <Modal shouldOpen={loginModalOpen} setModalOpen={setLoginModalOpen}>

@@ -95,6 +95,16 @@ def get_all_projects(user_email):
 
     return (jsonify(projects), HTTPStatus.OK) if projects else ('projects not found', HTTPStatus.NOT_FOUND)
 
+@app.route('/projects/<string:user_email>', methods=['POST'])
+@check_valid_mail
+@jwt_required()
+def edit_projects(user_email):
+    #TODO: edit the content
+    print(get_jwt_identity())
+    print(request.data.decode())
+
+    return (jsonify(""), HTTPStatus.OK)
+
 
 @app.route('/projects/<string:user_email>/<int:project_id>', methods=['GET'])
 @check_valid_mail
@@ -104,13 +114,6 @@ def get_project_by_id(user_email, project_id):
 
     return (jsonify(project), HTTPStatus.OK) if project else ('project not found', HTTPStatus.NOT_FOUND)
 
-#TODO: delete this
-@app.route('/jwt', methods=['POST'])
-@jwt_required()
-def add_one_project():
-    current_user = get_jwt_identity()
-    print(current_user)
-    return "ok"
 
 @app.route('/user/login', methods=['POST'])
 def user_login():
@@ -129,4 +132,4 @@ def user_login():
             identity=user_email)  # create jwt token
         return jsonify(access_token=access_token), HTTPStatus.OK
 
-    return "wrong creds", HTTPStatus.UNAUTHORIZED
+    return "wrong credentials", HTTPStatus.UNAUTHORIZED
