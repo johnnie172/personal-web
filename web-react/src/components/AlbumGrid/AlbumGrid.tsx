@@ -32,6 +32,57 @@ const chooseImg = ([img64, img]: Array<string | undefined> | []): string => {
   return img64 ? `data:image/webp;base64,${img64}` : img ? img : "";
 };
 
+interface ProjectDetails {
+  id: number;
+  field: string;
+}
+interface EditableWrapperProps {
+  children?: React.ReactNode;
+  projectDetails: ProjectDetails;
+  projectsToEdit: {} | Project;
+  setProjectsToEdit: React.Dispatch<React.SetStateAction<{} | Project>>;
+}
+const EditableWrapper: React.FC<EditableWrapperProps> = ({
+  children,
+  projectDetails,
+  projectsToEdit,
+  setProjectsToEdit,
+}) => {
+  const changeElementText = (
+    e: React.FormEvent<HTMLHeadingElement>,
+    projectDetails: ProjectDetails
+  ) => {
+    // TODO: remove errors
+    const newProjects = { ...projectsToEdit };
+    // @ts-expect-error
+    newProjects[projectDetails.id] = newProjects[projectDetails?.id] || {};
+    // @ts-expect-error
+    newProjects[projectDetails.id][projectDetails?.field] =
+      e?.currentTarget?.textContent;
+    setProjectsToEdit(newProjects);
+
+    // TODO: add debounce
+    // setTimeout(() => {
+    //   setProjectsToEdit({ ...projectsToEdit, ...objToAdd });
+    // }, 1000);
+
+  };
+  return (
+    <div
+      contentEditable
+      suppressContentEditableWarning
+      onInput={(e: React.FormEvent<HTMLHeadingElement>) => {
+        changeElementText(e, {
+          id: projectDetails.id,
+          field: projectDetails.field,
+        });
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
 const AlbumGrid = () => {
   const {
     userAuth: { isAuth },
@@ -50,17 +101,9 @@ const AlbumGrid = () => {
       method: "post",
       fetch: true,
     });
-  };
-
-  const changeElementText = (
-    e: React.FormEvent<HTMLHeadingElement>,
-    obj: any
-  ) => {
-    const objToAdd = {};
-    // TODO: check if project exists and create the felids to change
-    // @ts-expect-error
-    objToAdd[obj?.id] = { [obj?.field]: e?.currentTarget?.textContent };
-    setProjectsToEdit({ ...projectsToEdit, ...objToAdd });
+    setTimeout(() => {
+      setAxiosParams(axiosParams);
+    }, 1500);
   };
   return (
     <Container sx={{ py: 8 }} maxWidth="lg">
@@ -94,22 +137,29 @@ const AlbumGrid = () => {
                   alt={`img-${project.id}`}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                    textAlign={"center"}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onInput={(e: React.FormEvent<HTMLHeadingElement>) =>
-                      changeElementText(e, { id: project.id, field: "title" })
-                    }
+                  <EditableWrapper
+                    projectDetails={{ id: project.id, field: "title" }}
+                    projectsToEdit={projectsToEdit}
+                    setProjectsToEdit={setProjectsToEdit}
                   >
-                    {project.title || "No title"}
-                  </Typography>
-                  <Typography textAlign={"center"}>
-                    {project.description || "No description"}
-                  </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      textAlign={"center"}
+                    >
+                      {project.title || "No title"}
+                    </Typography>
+                  </EditableWrapper>
+                  <EditableWrapper
+                    projectDetails={{ id: project.id, field: "description" }}
+                    projectsToEdit={projectsToEdit}
+                    setProjectsToEdit={setProjectsToEdit}
+                  >
+                    <Typography textAlign={"center"}>
+                      {project.description || "No description"}
+                    </Typography>
+                  </EditableWrapper>
                 </CardContent>
                 <CardActions>
                   {project?.additional_info && (
