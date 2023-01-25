@@ -4,16 +4,13 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Button, LinearProgress } from "@mui/material";
-import {
-  Brightness3 as DarkModeIcon,
-  Brightness7 as LightModeIcon,
-} from "@mui/icons-material";
+
 import { Route, Routes } from "react-router-dom";
 import { USER_API } from "./consts";
 import { isEmptyObj } from "./utilities";
 import { useLocalStorage, useAxiosFetch, useUserAuth } from "./hooks";
 import { MainPage } from "./components/MainPage";
-import { AppBar } from "./components/AppBar";
+import { AppBar, ThemeButton } from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
 import { LoginForm } from "./components/LoginForm";
 import { Modal } from "./components/Modal";
@@ -47,48 +44,14 @@ const App = () => {
     api: USER_API,
   };
   const { data, loading, error } = useAxiosFetch(axiosParams);
+
+  // check for default theme or localStorage theme and set the correct theme
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [localTheme, setLocalTheme] = useLocalStorage<"dark" | "light">(
     "theme",
     prefersDarkMode ? "dark" : "light"
   );
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-
-  const ThemeButton = () => {
-    return (
-      <Button
-        id="btn-theme"
-        onClick={() => setLocalTheme(localTheme === "light" ? "dark" : "light")}
-        sx={{ color: "#fff" }}
-      >
-        {localTheme === "dark" ? <DarkModeIcon /> : <LightModeIcon />}
-      </Button>
-    );
-  };
-
-  const LoginButton = () => {
-    return (
-      <Button
-        onClick={() => {
-          setLoginModalOpen(!loginModalOpen);
-        }}
-        sx={{ color: "#fff" }}
-      >
-        Login
-      </Button>
-    );
-  };
-
-  const LogoutButton = () => {
-    return (
-      <Button
-        onClick={logout}
-        sx={{ color: "#fff" }}
-      >
-        Logout
-      </Button>
-    );
-  };
 
   const theme = React.useMemo(
     () =>
@@ -106,8 +69,7 @@ const App = () => {
       <div className="App">
         <header className="App-header"></header>
         <AppBar>
-          <ThemeButton />
-          {userAuth.isAuth ? <LogoutButton /> : <LoginButton />}
+          <ThemeButton localTheme={localTheme} setLocalTheme={setLocalTheme}/>
         </AppBar>
         <>
           <Modal shouldOpen={loginModalOpen} setModalOpen={setLoginModalOpen}>
