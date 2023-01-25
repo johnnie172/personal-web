@@ -1,16 +1,20 @@
 import React, { useState } from "react";
-import "./App.css";
+import { Route, Routes } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Button, LinearProgress } from "@mui/material";
-
-import { Route, Routes } from "react-router-dom";
+import { LinearProgress } from "@mui/material";
+import "./App.css";
 import { USER_API } from "./consts";
 import { isEmptyObj } from "./utilities";
-import { useLocalStorage, useAxiosFetch, useUserAuth } from "./hooks";
+import { useLocalStorage, useAxiosFetch } from "./hooks";
 import { MainPage } from "./components/MainPage";
-import { AppBar, ThemeButton } from "./components/AppBar";
+import {
+  AppBar,
+  ThemeButton,
+  LogoutButton,
+  LoginButton,
+} from "./components/AppBar";
 import { AppFooter } from "./components/AppFooter";
 import { LoginForm } from "./components/LoginForm";
 import { Modal } from "./components/Modal";
@@ -38,8 +42,10 @@ export interface User {
 const home_paths = ["home", "/"];
 
 const App = () => {
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+  // get user date
   const { userAuth } = useAuthContext();
-  const { logout } = useUserAuth();
   const axiosParams = {
     api: USER_API,
   };
@@ -51,8 +57,6 @@ const App = () => {
     "theme",
     prefersDarkMode ? "dark" : "light"
   );
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-
   const theme = React.useMemo(
     () =>
       createTheme({
@@ -69,7 +73,12 @@ const App = () => {
       <div className="App">
         <header className="App-header"></header>
         <AppBar>
-          <ThemeButton localTheme={localTheme} setLocalTheme={setLocalTheme}/>
+          <ThemeButton localTheme={localTheme} setLocalTheme={setLocalTheme} />
+          {userAuth.isAuth ? (
+            <LogoutButton />
+          ) : (
+            <LoginButton setLoginModalOpen={setLoginModalOpen} />
+          )}
         </AppBar>
         <>
           <Modal shouldOpen={loginModalOpen} setModalOpen={setLoginModalOpen}>

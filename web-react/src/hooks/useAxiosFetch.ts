@@ -8,7 +8,6 @@ interface HookParameters extends AxiosRequestConfig {
   timeOut?: number;
 }
 
-// TODO: deconstruct
 const useAxiosFetch = (paramObj: HookParameters) => {
   const [data, setData] = useState<any>({});
   const [axiosParams, setAxiosParams] = useState(paramObj)
