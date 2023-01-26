@@ -8,8 +8,8 @@ interface HookParameters extends AxiosRequestConfig {
   timeOut?: number;
 }
 
-const useAxiosFetch = (paramObj: HookParameters) => {
-  const [data, setData] = useState<any>({});
+const useAxiosFetch = <TData>(paramObj: HookParameters) => {
+  const [data, setData] = useState<TData | null>(null);
   const [axiosParams, setAxiosParams] = useState(paramObj)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -19,7 +19,7 @@ const useAxiosFetch = (paramObj: HookParameters) => {
 
   useEffect(() => {
     const source = axios.CancelToken.source();
-    const config: AxiosRequestConfig<any> = {
+    const config: AxiosRequestConfig = {
       cancelToken: source.token,
       method: axiosParams?.method || "GET",
       url: axiosParams.api,

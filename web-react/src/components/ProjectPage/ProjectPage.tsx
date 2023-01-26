@@ -58,12 +58,20 @@ const BootstrapDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
+interface ProjectAdditionalInfo {
+  additional_info: string;
+  email: string;
+  git_info: string;
+  project_id: number;
+}
+
 const ProjectPage = ({ projectId }: { projectId: number }) => {
   const axiosParams = {
     api: `${PROJECTS_API}/${USER_EMAIL}/${projectId}`,
-    fetch: false
+    fetch: false,
   };
-  const { data, loading, error, setFetch } = useAxiosFetch(axiosParams);
+  const { data, loading, error, setFetch } =
+    useAxiosFetch<ProjectAdditionalInfo>(axiosParams);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {

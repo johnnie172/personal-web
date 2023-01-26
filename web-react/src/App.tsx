@@ -6,7 +6,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { LinearProgress } from "@mui/material";
 import "./App.css";
 import { USER_API } from "./consts";
-import { isEmptyObj } from "./utilities";
 import { useLocalStorage, useAxiosFetch } from "./hooks";
 import { MainPage } from "./components/MainPage";
 import {
@@ -49,7 +48,7 @@ const App = () => {
   const axiosParams = {
     api: USER_API,
   };
-  const { data, loading, error } = useAxiosFetch(axiosParams);
+  const { data: userData, loading, error } = useAxiosFetch<User>(axiosParams);
 
   // check for default theme or localStorage theme and set the correct theme
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -90,7 +89,11 @@ const App = () => {
                 key={path}
                 path={path}
                 element={
-                  <MainPage {...{ user: data, loading, error }}>{}</MainPage>
+                  userData && (
+                    <MainPage {...{ user: userData, loading, error }}>
+                      {}
+                    </MainPage>
+                  )
                 }
               />
             ))}
@@ -98,7 +101,7 @@ const App = () => {
               path="/Contact"
               element={
                 <React.Suspense fallback={<LinearProgress />}>
-                  <Contact contactInfo={data.contact_info} />
+                  <Contact contactInfo={userData?.contact_info} />
                 </React.Suspense>
               }
             />
@@ -112,10 +115,10 @@ const App = () => {
             ></Route>
           </Routes>
         </>
-        {!isEmptyObj(data) && (
+        {userData && (
           <AppFooter
             {...{
-              title: `${data?.first_name} ${data?.last_name}`,
+              title: `${userData?.first_name} ${userData?.last_name}`,
               subtitle: "subtitle",
               link: "",
             }}

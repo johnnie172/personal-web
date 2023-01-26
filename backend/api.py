@@ -95,14 +95,32 @@ def get_all_projects(user_email):
 
     return (jsonify(projects), HTTPStatus.OK) if projects else ('projects not found', HTTPStatus.NOT_FOUND)
 
+
 @app.route('/projects/<string:user_email>', methods=['POST'])
 @check_valid_mail
 @jwt_required()
 def edit_projects(user_email):
-    #TODO: edit the content
-    print(get_jwt_identity())
-    print(request.data.decode())
 
+    # check if the user matches
+    email = get_jwt_identity()
+    if email != user_email:
+        return jsonify("Email not valid!"), HTTPStatus.BAD_REQUEST
+
+    # get projects from db
+    projects = mongo.get_one("user", {"email": email}, {
+                             "projects": 1}).get("projects")
+
+    # check for projects to change
+    # TODO: change this to insert into db or change schema
+    projects_to_change = request.get_json()
+    for project in projects:
+        current_id = str(project.get("id"))
+        current_fields_to_change = projects_to_change.get(current_id)
+        if current_fields_to_change:
+            for key, value_to_change in current_fields_to_change.items():
+                project[key] = value_to_change
+    mongo.db["user"].update_one(
+        {"email": email}, {"$set": {"projects": projects}})
     return (jsonify(""), HTTPStatus.OK)
 
 

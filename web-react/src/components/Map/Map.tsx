@@ -35,7 +35,7 @@ const MapboxWrapper = ({
     onLoad={() => setMapLoading(false)}
   >
     {children}
-    {locations_data.locations.map((coords, index) => (
+    {locations_data && locations_data.locations.map((coords, index) => (
       <Polygon key={index} locations={coords} id={index}></Polygon>
     ))}
   </MapBox>
@@ -45,13 +45,13 @@ export const Map = () => {
   const axiosParams = {
     api: LOCATIONS_API,
   };
-  const { data, loading, error } = useAxiosFetch(axiosParams);
+  const { data : locationsData, loading, error } = useAxiosFetch<ILocationsData>(axiosParams);
   const mapRef = useRef<MapRef | null>(null);
   const [mapLoading, setMapLoading] = useState(true);
   const locations_data = useMemo<ILocationsData>(
     () =>
-      Object.keys(data).length !== 0 ? data : { locations: [], center: [0, 0] },
-    [data]
+    locationsData ? locationsData : { locations: [], center: [0, 0] },
+    [locationsData]
   );
 
   useEffect(() => {

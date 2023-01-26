@@ -65,7 +65,6 @@ const EditableWrapper: React.FC<EditableWrapperProps> = ({
     // setTimeout(() => {
     //   setProjectsToEdit({ ...projectsToEdit, ...objToAdd });
     // }, 1000);
-
   };
   return (
     <div
@@ -90,8 +89,12 @@ const AlbumGrid = () => {
   const axiosParams = {
     api: `${PROJECTS_API}/${USER_EMAIL}`,
   };
-  const { data, loading, error, setAxiosParams } = useAxiosFetch(axiosParams);
-  const projects: Array<Project> = Object.keys(data).length !== 0 ? data : [];
+  const {
+    data: projectsData,
+    loading,
+    error,
+    setAxiosParams,
+  } = useAxiosFetch<Array<Project>>(axiosParams);
 
   const [projectsToEdit, setProjectsToEdit] = useState<Project | {}>({});
   const handleEditClick = () => {
@@ -119,7 +122,8 @@ const AlbumGrid = () => {
             color="error"
           >{`${error}`}</Typography>
         ) : (
-          projects.map((project) => (
+          projectsData &&
+          projectsData?.map((project) => (
             <Grid item key={project.id} xs={12} sm={6} md={6}>
               <Card
                 sx={{
